@@ -3,6 +3,7 @@ package com.avishayil.rnrestart;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -41,17 +42,20 @@ public class ReactNativeRestart extends ReactContextBaseJavaModule {
     }
 
     private void loadBundle() {
-        clearLifecycleEventListener();
-        try {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    loadBundleLegacy();
-                }
-            });
-        } catch (Exception e) {
-            loadBundleLegacy();
-        }
+//        clearLifecycleEventListener();
+//        try {
+//            new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    loadBundleLegacy();
+//                }
+//            });
+//        } catch (Exception e) {
+//            loadBundleLegacy();
+//        }
+        final Intent intent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private static ReactInstanceHolder mReactInstanceHolder;
