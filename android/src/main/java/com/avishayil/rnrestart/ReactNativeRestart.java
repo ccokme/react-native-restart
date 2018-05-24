@@ -1,13 +1,16 @@
 package com.avishayil.rnrestart;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
@@ -20,9 +23,11 @@ public class ReactNativeRestart extends ReactContextBaseJavaModule {
     private static final String REACT_NATIVE_HOST_CLASS_NAME = "com.facebook.react.ReactNativeHost";
 
     private LifecycleEventListener mLifecycleEventListener = null;
+    private ReactContext mContext;
 
     public ReactNativeRestart(ReactApplicationContext reactContext) {
         super(reactContext);
+        mContext = reactContext;
     }
 
     private void loadBundleLegacy() {
@@ -41,16 +46,40 @@ public class ReactNativeRestart extends ReactContextBaseJavaModule {
         });
     }
 
+
+
     private void loadBundle() {
-      new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Intent LaunchIntent = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName());
                 LaunchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 mContext.startActivity(LaunchIntent);
+
                 android.os.Process.killProcess(android.os.Process.myPid());
             }
-        }, 500);// 1秒钟后重启应用
+        },500);
+
+//        clearLifecycleEventListener();
+//        try {
+//            final ReactInstanceManager instanceManager = resolveInstanceManager();
+//            if (instanceManager == null) {
+//                return;
+//            }
+//            new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        instanceManager.recreateReactContextInBackground();
+//                    } catch (Exception e) {
+//                        loadBundleLegacy();
+//                    }
+//                }
+//            });
+//
+//        } catch (Exception e) {
+//            loadBundleLegacy();
+//        }
     }
 
     private static ReactInstanceHolder mReactInstanceHolder;
